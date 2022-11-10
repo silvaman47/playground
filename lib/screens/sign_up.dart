@@ -83,8 +83,11 @@ class _HomepageState extends State<Homepage> {
                   child: TextField(
                     controller: passwordController,
                     decoration: constdeco.copyWith(
-                        errorText: texterror ? "Enter password with more than 6 characters" : null,
-                        hintText: "Password", prefixIcon: Icon(Icons.lock)),
+                        errorText: texterror
+                            ? "Enter password with more than 6 characters"
+                            : null,
+                        hintText: "Password",
+                        prefixIcon: Icon(Icons.lock)),
                   ),
                 ),
                 SizedBox(
@@ -135,6 +138,7 @@ class _HomepageState extends State<Homepage> {
                           });
                         }
                       }
+                      Navigator.of(context).pushNamed("/login");
                     },
                     child: Center(child: Text("Create Account")),
                   ),

@@ -56,13 +56,12 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: TextField(                                     
+                  child: TextField(
                     controller: emailController,
-                    decoration: constdeco.copyWith( 
-                        errorText: texterror ? "Enter valid email" : null,    
+                    decoration: constdeco.copyWith(
+                        errorText: texterror ? "Enter valid email" : null,
                         hintText: "Email Address",
                         prefixIcon: Icon(Icons.mail)),
-                        
                   ),
                 ),
                 SizedBox(
@@ -73,8 +72,11 @@ class _SignInPageState extends State<SignInPage> {
                   child: TextField(
                     controller: passwordController,
                     decoration: constdeco.copyWith(
-                      errorText: texterror ? "Enter password with more than 6 characters" : null,
-                        hintText: "Password", prefixIcon: Icon(Icons.lock)),
+                        errorText: texterror
+                            ? "Enter password with more than 6 characters"
+                            : null,
+                        hintText: "Password",
+                        prefixIcon: Icon(Icons.lock)),
                   ),
                 ),
                 SizedBox(
@@ -93,14 +95,14 @@ class _SignInPageState extends State<SignInPage> {
                       } else {
                         print(result.uid);
                       }
-                      
+
                       //sign in anonymously
                       // dynamic result = await _auth.signInAnon();
                       // if (result == null) {
                       //   print("error signing in");
                       // }
                       //   else{print(result.uid);
-                        
+
                       // }
                       if (emailController.text.isEmpty ||
                           !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
@@ -123,6 +125,7 @@ class _SignInPageState extends State<SignInPage> {
                           });
                         }
                       }
+                      Navigator.of(context).pushReplacementNamed("/appmain");
                     },
                     child: Center(child: Text("Sign In")),
                   ),

@@ -8,8 +8,17 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UidModel? _userFromFirebaseUser(User user) {
-    return user != null ? UidModel(
-      uid: user.uid, email: user.email.toString()):null;
+    return user != null ? UidModel(uid: user.uid) : null;
+  }
+
+  //logout
+  Future signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 
   // sign in anonymously
@@ -40,7 +49,8 @@ class AuthService {
   }
 
   //sign in with email and password
-  Future signInWithEmailAndPassword(String emailController, String passwordController) async {
+  Future signInWithEmailAndPassword(
+      String emailController, String passwordController) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: emailController.toString().trim(),
