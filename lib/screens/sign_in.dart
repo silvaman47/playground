@@ -19,6 +19,7 @@ class _SignInPageState extends State<SignInPage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool texterror = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +56,13 @@ class _SignInPageState extends State<SignInPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: TextField(
+                  child: TextField(                                     
                     controller: emailController,
-                    decoration: constdeco.copyWith(
+                    decoration: constdeco.copyWith( 
+                        errorText: texterror ? "Enter valid email" : null,    
                         hintText: "Email Address",
                         prefixIcon: Icon(Icons.mail)),
+                        
                   ),
                 ),
                 SizedBox(
@@ -70,6 +73,7 @@ class _SignInPageState extends State<SignInPage> {
                   child: TextField(
                     controller: passwordController,
                     decoration: constdeco.copyWith(
+                      errorText: texterror ? "Enter password with more than 6 characters" : null,
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
                   ),
                 ),
@@ -98,6 +102,27 @@ class _SignInPageState extends State<SignInPage> {
                       //   else{print(result.uid);
                         
                       // }
+                      if (emailController.text.isEmpty ||
+                          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(emailController.text)) {
+                        setState(() {
+                          texterror = true;
+                        });
+                      } else {
+                        setState(() {
+                          texterror = false;
+                        });
+                        if (passwordController.text.isEmpty ||
+                            passwordController.text.length < 6) {
+                          setState(() {
+                            texterror = true;
+                          });
+                        } else {
+                          setState(() {
+                            texterror = false;
+                          });
+                        }
+                      }
                     },
                     child: Center(child: Text("Sign In")),
                   ),

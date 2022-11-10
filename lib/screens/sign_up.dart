@@ -21,6 +21,8 @@ class _HomepageState extends State<Homepage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  bool texterror = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,11 +56,11 @@ class _HomepageState extends State<Homepage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
-                    controller: nameController,
-                    decoration: constdeco.copyWith(
-                    prefixIcon: Icon(Icons.person),
-                    hintText: "Name",
-                  )),
+                      controller: nameController,
+                      decoration: constdeco.copyWith(
+                          prefixIcon: Icon(Icons.person),
+                          hintText: "Name",
+                          errorText: texterror ? "Enter correct name" : null)),
                 ),
                 SizedBox(
                   height: 30,
@@ -68,6 +70,7 @@ class _HomepageState extends State<Homepage> {
                   child: TextField(
                     controller: emailController,
                     decoration: constdeco.copyWith(
+                        errorText: texterror ? "Enter valid email" : null,
                         hintText: "Email Address",
                         prefixIcon: Icon(Icons.mail)),
                   ),
@@ -80,6 +83,7 @@ class _HomepageState extends State<Homepage> {
                   child: TextField(
                     controller: passwordController,
                     decoration: constdeco.copyWith(
+                        errorText: texterror ? "Enter password with more than 6 characters" : null,
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
                   ),
                 ),
@@ -98,6 +102,38 @@ class _HomepageState extends State<Homepage> {
                         print("error signing in");
                       } else {
                         print(result.uid);
+                      }
+                      if (nameController.text.isEmpty ||
+                          !RegExp(r'^[a-z A-Z]+$')
+                              .hasMatch(nameController.text)) {
+                        setState(() {
+                          texterror = true;
+                        });
+                      } else {
+                        setState(() {
+                          texterror = false;
+                        });
+                      }
+                      if (emailController.text.isEmpty ||
+                          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                              .hasMatch(emailController.text)) {
+                        setState(() {
+                          texterror = true;
+                        });
+                      } else {
+                        setState(() {
+                          texterror = false;
+                        });
+                        if (passwordController.text.isEmpty ||
+                            passwordController.text.length < 6) {
+                          setState(() {
+                            texterror = true;
+                          });
+                        } else {
+                          setState(() {
+                            texterror = false;
+                          });
+                        }
                       }
                     },
                     child: Center(child: Text("Create Account")),
