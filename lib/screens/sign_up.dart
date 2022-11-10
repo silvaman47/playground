@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:playground/screens/sign_in.dart';
 import 'package:playground/constants/text_constants.dart';
+import 'package:playground/services/auth_services.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -14,6 +15,12 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final AuthService _auth = AuthService();
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +54,8 @@ class _HomepageState extends State<Homepage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
-                      decoration: constdeco.copyWith(
+                    controller: nameController,
+                    decoration: constdeco.copyWith(
                     prefixIcon: Icon(Icons.person),
                     hintText: "Name",
                   )),
@@ -58,6 +66,7 @@ class _HomepageState extends State<Homepage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    controller: emailController,
                     decoration: constdeco.copyWith(
                         hintText: "Email Address",
                         prefixIcon: Icon(Icons.mail)),
@@ -69,6 +78,7 @@ class _HomepageState extends State<Homepage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    controller: passwordController,
                     decoration: constdeco.copyWith(
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
                   ),
@@ -80,7 +90,16 @@ class _HomepageState extends State<Homepage> {
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      //register with email and password
+                      dynamic result = await _auth.registerWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+                      if (result == null) {
+                        print("error signing in");
+                      } else {
+                        print(result.uid);
+                      }
+                    },
                     child: Center(child: Text("Create Account")),
                   ),
                 ),

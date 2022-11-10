@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:playground/screens/homepage.dart';
+import 'package:playground/screens/sign_up.dart';
 import 'package:playground/constants/text_constants.dart';
+import 'package:playground/services/auth_services.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -14,6 +15,11 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  final AuthService _auth = AuthService();
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +56,7 @@ class _SignInPageState extends State<SignInPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    controller: emailController,
                     decoration: constdeco.copyWith(
                         hintText: "Email Address",
                         prefixIcon: Icon(Icons.mail)),
@@ -61,6 +68,7 @@ class _SignInPageState extends State<SignInPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: TextField(
+                    controller: passwordController,
                     decoration: constdeco.copyWith(
                         hintText: "Password", prefixIcon: Icon(Icons.lock)),
                   ),
@@ -72,7 +80,25 @@ class _SignInPageState extends State<SignInPage> {
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      //sign in with email and password
+                      dynamic result = await _auth.signInWithEmailAndPassword(
+                          emailController.text, passwordController.text);
+                      if (result == null) {
+                        print("error signing in");
+                      } else {
+                        print(result.uid);
+                      }
+                      
+                      //sign in anonymously
+                      // dynamic result = await _auth.signInAnon();
+                      // if (result == null) {
+                      //   print("error signing in");
+                      // }
+                      //   else{print(result.uid);
+                        
+                      // }
+                    },
                     child: Center(child: Text("Sign In")),
                   ),
                 ),
@@ -176,7 +202,7 @@ class _SignInPageState extends State<SignInPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                          builder: (BuildContext context) => Homepage()));
+                              builder: (BuildContext context) => Homepage()));
                     },
                     child: Text(
                       "Create an Account",
