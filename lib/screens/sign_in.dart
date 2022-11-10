@@ -20,6 +20,7 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool texterror = false;
+  bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _SignInPageState extends State<SignInPage> {
                 Container(
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ElevatedButton(
+                  child:  !isloading ? ElevatedButton(
                     onPressed: () async {
                       //sign in with email and password
                       dynamic result = await _auth.signInWithEmailAndPassword(
@@ -128,6 +129,11 @@ class _SignInPageState extends State<SignInPage> {
                       Navigator.of(context).pushReplacementNamed("/appmain");
                     },
                     child: Center(child: Text("Sign In")),
+                  ):Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.blue,
+                      backgroundColor: Colors.amber,
+                    ),
                   ),
                 ),
                 SizedBox(

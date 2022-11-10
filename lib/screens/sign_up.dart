@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:playground/models/usermodel.dart';
 import 'package:playground/screens/sign_in.dart';
 import 'package:playground/constants/text_constants.dart';
 import 'package:playground/services/auth_services.dart';
@@ -22,6 +25,8 @@ class _HomepageState extends State<Homepage> {
   TextEditingController passwordController = TextEditingController();
 
   bool texterror = false;
+  bool isloading = false;
+  final db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -96,52 +101,76 @@ class _HomepageState extends State<Homepage> {
                 Container(
                   height: 50,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      //register with email and password
-                      dynamic result = await _auth.registerWithEmailAndPassword(
-                          emailController.text, passwordController.text);
-                      if (result == null) {
-                        print("error signing in");
-                      } else {
-                        print(result.uid);
-                      }
-                      if (nameController.text.isEmpty ||
-                          !RegExp(r'^[a-z A-Z]+$')
-                              .hasMatch(nameController.text)) {
-                        setState(() {
-                          texterror = true;
-                        });
-                      } else {
-                        setState(() {
-                          texterror = false;
-                        });
-                      }
-                      if (emailController.text.isEmpty ||
-                          !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                              .hasMatch(emailController.text)) {
-                        setState(() {
-                          texterror = true;
-                        });
-                      } else {
-                        setState(() {
-                          texterror = false;
-                        });
-                        if (passwordController.text.isEmpty ||
-                            passwordController.text.length < 6) {
-                          setState(() {
-                            texterror = true;
-                          });
-                        } else {
-                          setState(() {
-                            texterror = false;
-                          });
-                        }
-                      }
-                      Navigator.of(context).pushNamed("/login");
-                    },
-                    child: Center(child: Text("Create Account")),
-                  ),
+                  child: !isloading
+                      ? ElevatedButton(
+                          onPressed: () async {
+                            //register with email and password
+                            dynamic result =
+                                await _auth.registerWithEmailAndPassword(
+                                    emailController.text,
+                                    passwordController.text);
+                            if (result == null) {
+                              print("error signing in");
+                            } else {
+                              print(result.uid);
+                            }
+                            if (nameController.text.isEmpty ||
+                                !RegExp(r'^[a-z A-Z]+$')
+                                    .hasMatch(nameController.text)) {
+                              setState(() {
+                                texterror = true;
+                              });
+                            } else {
+                              setState(() {
+                                texterror = false;
+                              });
+                            }
+                            if (emailController.text.isEmpty ||
+                                !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                    .hasMatch(emailController.text)) {
+                              setState(() {
+                                texterror = true;
+                              });
+                            } else {
+                              setState(() {
+                                texterror = false;
+                              });
+                              if (passwordController.text.isEmpty ||
+                                  passwordController.text.length < 6) {
+                                setState(() {
+                                  texterror = true;
+                                });
+                              } else {
+                                setState(() {
+                                  texterror = false;
+                                });
+                              }
+                            }
+                            final user = UserModel(
+                              name: nameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              id: FirebaseAuth.instance.currentUser?.uid
+                            );
+                            final docRef = db
+                                .collection("users")
+                                .withConverter(
+                                  fromFirestore: UserModel.fromFirestore,
+                                  toFirestore: (UserModel user, options) =>
+                                      user.toFirestore(),
+                                )
+                                .doc(FirebaseAuth.instance.currentUser?.uid);
+                            await docRef.set(user);
+
+                            Navigator.of(context).pushNamed("/login");
+                          },
+                          child: Center(child: Text("Create Account")),
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.blue,
+                          ),
+                        ),
                 ),
                 SizedBox(
                   height: 30,

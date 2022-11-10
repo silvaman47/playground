@@ -14,23 +14,33 @@ class AppMain extends StatefulWidget {
 
 class _AppMainState extends State<AppMain> {
   AuthService _auth = AuthService();
+  bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(children: <Widget>[
-            ElevatedButton(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+            !isloading ?ElevatedButton(
                 onPressed: () async {
                   // ignore: prefer_const_constructors
-                  CircularProgressIndicator(
-                    color: Colors.blue,
-                  );
+
+                  setState(() {
+                    isloading = false;
+                    isloading =!isloading;
+                  });
+                  
                   await _auth.signOut();
                   Navigator.of(context).pushReplacementNamed("/login");
                 },
-                child: Center(child: Text("Logout")))
+                child: Center(child: Text("Logout"),
+                ),
+                ):Center(
+                  child: CircularProgressIndicator(),
+                )
           ]),
         ),
       ),

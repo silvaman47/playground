@@ -26,7 +26,7 @@ void main() async {
     _defaultHome = SignInPage();
   } else {
 // logged
-    _defaultHome = Homepage();
+    _defaultHome = AppMain();
   }
 
   runApp(MaterialApp(
